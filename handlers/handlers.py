@@ -53,6 +53,7 @@ async def handle_message(message: Message):
             message_data = MessageModel(
                 user_id=user_id,
                 datetime=str(datetime.datetime.now()),
+                msg_type="user",
                 message=message_text
                 )
             message_id = await mongo_actions.create_message(message_data)
