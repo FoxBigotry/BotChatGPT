@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "botchatgpt"
+version = "0.1.0"
+description = ""
+authors = ["FoxBigotry <152131156+FoxBigotry@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^3.7.0"
+pydantic-settings = "^2.3.0"
+openai = "^1.31.0"
+motor = "^3.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
