@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     PROMPT_TOKEN_PRICE: int = 5  # in usd
     COMPLETION_TOKEN_PRICE: int = 15  # in usd
     DEFAULT_MODEL: str = "gpt-4o-2024-05-13"
+    DEFAULT_TEMPERATURE: float = 0.8
+    HISTORY_LENGTH: int = 5  # in messages
+    AUDIOS_DIR: str = "tmp/audios/"
 
 
 settings = Settings()

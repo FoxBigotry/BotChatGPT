@@ -24,7 +24,6 @@ class MessageModel(BaseModel):
     message: str | None = Field(None)
     response: str | None = Field(None)
 
-    msg_type: str | None = Field(None)
     prompt_tokens: int | None = Field(None)
     completion_tokens: int | None = Field(None)
     spent_tokens: int | None = Field(None)
@@ -44,7 +43,6 @@ class MessageModel(BaseModel):
             message=response.choices[0].message.content.strip(),
             datetime=iso_format_date,
             user_id=thread_id,
-            msg_type=msg_type,
             prompt_tokens=response.usage.prompt_tokens,
             completion_tokens=response.usage.completion_tokens,
             spent_tokens=response.usage.total_tokens,

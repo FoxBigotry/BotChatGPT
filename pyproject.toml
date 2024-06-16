@@ -11,6 +11,8 @@ aiogram = "^3.7.0"
 pydantic-settings = "^2.3.0"
 openai = "^1.31.0"
 motor = "^3.4.0"
+moviepy = "^1.0.3"
+ffmpeg-python = "^0.2.0"
 
 
 [build-system]

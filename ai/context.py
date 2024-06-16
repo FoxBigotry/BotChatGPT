@@ -11,12 +11,17 @@ async def read_markdown_file(file_path: str) -> str:
         print(f"error: {str(e)}")
 
 
-async def create_chat_context(last_text) -> list:
-    info = await read_markdown_file('ai/settings.md')
+async def create_chat_context(last_text, prompt_path: str) -> list:
+    info = await read_markdown_file(prompt_path)
     context = [{"role": "system", "content": info}]
-    for msg in last_text:
+    counter = 0
+    for msg in last_text[::-1]:
+
         if 'message' in msg and msg['message']:
             context.append({"role": "user", "content": msg['message']})
         if 'response' in msg and msg['response']:
             context.append({"role": "assistant", "content": msg['response']})
+        if counter >= 10:
+            break
+        counter += 1
     return context
