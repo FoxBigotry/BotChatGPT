@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     DEFAULT_TEMPERATURE: float = 0.8
     HISTORY_LENGTH: int = 5  # in messages
     AUDIOS_DIR: str = "tmp/audios/"
+    USER_IDS: str
+    ADMIN_ID: str | None = None
 
 
 settings = Settings()

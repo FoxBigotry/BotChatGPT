@@ -18,12 +18,11 @@ user_states = {}
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    await message.answer('Бот поднялся\n'
-                         'Какой у вас вопрос для великого разума?\n'
-                         'Знай, я могу забыть всё по коменде /reset')
+    await message.answer('Ваш ассистент на месте\n'
+                         'С каким вопросом могу вам помочь?')
 
 
-@router.message(Command("reset"))
+@router.message(Command("reset_dev"))
 async def cmd_reset(message: Message):
     await mongo_actions.reset_all(str(message.from_user.id))
     await message.answer('Всё было удалено, если хочешь мы можем начать сначала.')
@@ -32,6 +31,11 @@ async def cmd_reset(message: Message):
 @router.message(F.text)
 async def handle_message(message: Message, voice_msg_text=None):
     user_id = str(message.from_user.id)
+    if user_id not in settings.USER_IDS.split(','):
+        await message.answer("Я персональный ассистент для узкого круга лиц.\n "
+                             "Можете написать @astehr для получения доступа ")
+        return
+
     if voice_msg_text:
         message_text = voice_msg_text
     else:
