@@ -17,9 +17,9 @@ class OpenAi:
                                       transport=httpx.HTTPTransport(local_address="0.0.0.0")
                                   ))
 
-    async def gpt4(self, question, user_id):
-        last_text = await mongo_actions.get_user_messages(user_id)
-        context = await create_chat_context(last_text)
+    async def gpt4(self, question, user_id, chat_topic):
+        last_text = await mongo_actions.get_user_messages(user_id, chat_topic)
+        context = await create_chat_context(last_text, chat_topic)
         context.append({"role": "user", "content": str(question)})
         try:
             response = await self.client.chat.completions.create(

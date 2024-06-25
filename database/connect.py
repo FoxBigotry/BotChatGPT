@@ -31,10 +31,11 @@ class MongoDBActions(MongoDBConnection):
         except Exception as e:
             logging.error(f"Error while resetting data: {e}")
 
-    async def get_user_messages(self, user_id: str, limit=5):
+    async def get_user_messages(self, user_id: str, chat_topic: str, limit=5):
         try:
-            messages = await self.message_collection.find({'user_id': user_id}).sort('timestamp', -1).limit(limit).to_list(
-                length=limit)
+            messages = await self.message_collection.find({'user_id': user_id,
+                                                           'chat_topic': chat_topic}
+                                                          ).sort('timestamp', -1).limit(limit).to_list(length=limit)
             if not messages:
                 return []
             return messages
@@ -65,3 +66,10 @@ class MongoDBActions(MongoDBConnection):
         except Exception as e:
             logging.error(f"Error while getting user data: {e}")
             return None
+
+    async def reset_topic(self, user_id: str, chat_topic: str):
+        try:
+            await self.message_collection.delete_many({"user_id": user_id,
+                                                       "chat_topic": chat_topic})
+        except Exception as e:
+            logging.error(f"Error while resetting data: {e}")

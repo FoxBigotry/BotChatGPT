@@ -17,3 +17,4 @@ class MessageModel(BaseModel):
     datetime: str | None = Field(None)
     message: str | None = Field(None)
     response: str | None = Field(None)
+    chat_topic: str | None = Field(None)
