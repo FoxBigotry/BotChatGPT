@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     MONGO_DB_NAME: str
     OPENAI_API_KEY: str | None = None
     PROXY: str
+    MODEL_AI: str
 
 
 settings = Settings()

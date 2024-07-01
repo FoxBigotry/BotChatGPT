@@ -3,12 +3,14 @@ import datetime
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
-from ai.ai import OpenAi
+from ai.prog.ai_prog import OpenAi_prog
+from ai.cook.ai_cook import OpenAi_cook
 from database.connect import MongoDBActions
-from database.modeles import MessageModel, UserModel
+from database.models import MessageModel, UserModel
 
 router = Router()
-openai_client = OpenAi()
+openai_client_prog = OpenAi_prog()
+openai_client_cook = OpenAi_cook()
 mongo_actions = MongoDBActions()
 
 user_states = {}
@@ -39,8 +41,6 @@ async def handle_message(message: Message):
     user_id = str(message.from_user.id)
     message_text = message.text
     chat_topic = str(message.message_thread_id)
-
-
     user_data = await mongo_actions.get_user(user_id)
     if not user_data:
         user_data = UserModel(
@@ -67,7 +67,10 @@ async def handle_message(message: Message):
                 )
             message_id = await mongo_actions.create_message(message_data)
 
-            response = await openai_client.gpt4(message_text, user_id, chat_topic)
+            if chat_topic == '14':
+                response = await openai_client_cook.gpt4(message_text, user_id, chat_topic)
+            else:
+                response = await openai_client_prog.gpt4(message_text, user_id, chat_topic)
 
             if user_id in user_states and user_states[user_id] != message_text:
                 message_text = user_states[user_id]
@@ -78,14 +81,16 @@ async def handle_message(message: Message):
                     chat_topic=chat_topic
                     )
                 message_id = await mongo_actions.create_message(message_data)
-                response = await openai_client.gpt4(message_text, user_id, chat_topic)
+                if chat_topic == '14':
+                    response = await openai_client_cook.gpt4(message_text, user_id, chat_topic)
+                else:
+                    response = await openai_client_prog.gpt4(message_text, user_id, chat_topic)
 
-            update_data = {"response": response.choices[0].message.content}
+            update_data = {"response": response}
             await mongo_actions.update_message(message_id, update_data)
-            await message.answer(response.choices[0].message.content)
-
+            await message.answer(response)
         except Exception as e:
-            logging.error(f"Error while saving to MongoDB: {e}")
+            logging.error(f"Error while saving to MongoDB:\n {e}")
             await message.answer("An error occurred while saving your message.")
 
         finally:
