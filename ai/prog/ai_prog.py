@@ -1,12 +1,8 @@
 import httpx
 import logging
-from ai.context import create_chat_context, read_markdown_file
+from ai.context import read_markdown_file, build_context
 from settings import settings
 from openai import AsyncOpenAI
-from database.connect import MongoDBActions
-
-
-mongo_actions = MongoDBActions()
 
 
 class OpenAi_prog:
@@ -25,12 +21,7 @@ class OpenAi_prog:
     async def gpt4(self, question, user_id, chat_topic):
         if self.prompt_prog is None:
             await self.initialize_prompt()
-        context = [{"role": "system", "content": self.prompt_prog}]
-        last_text = await mongo_actions.get_user_messages(user_id, chat_topic)
-        context_user = await create_chat_context(last_text, chat_topic)
-        context.extend(context_user)
-        print(context)
-        context.append({"role": "user", "content": str(question)})
+        context = await build_context(user_id, chat_topic, question, self.prompt_prog)
         try:
             response = await self.client.chat.completions.create(
                 messages=context,
@@ -39,3 +30,4 @@ class OpenAi_prog:
             return response.choices[0].message.content
         except Exception as e:
             logging.error(f"Error during OpenAI request:\n {e}")
+            return "Произошла ошибка при обработке запроса."

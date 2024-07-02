@@ -1,6 +1,5 @@
 import logging
 import random
-
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from settings import settings
@@ -34,8 +33,9 @@ class MongoDBActions(MongoDBConnection):
         try:
             await self.message_collection.delete_many({"user_id": user_id})
             await self.users_collection.delete_many({"user_id": user_id})
+            await self.favorite_recipes_collection.delete_many({"user_id": user_id})
         except Exception as e:
-            logging.error(f"Error while resetting data:\n {e}")
+            logging.error(f"Error while resetting all data:\n {e}")
 
     async def get_user_messages(self, user_id: str, chat_topic: str, limit=5):
         try:
@@ -80,7 +80,7 @@ class MongoDBActions(MongoDBConnection):
             await self.message_collection.delete_many({"user_id": user_id,
                                                        "chat_topic": chat_topic})
         except Exception as e:
-            logging.error(f"Error while resetting data:\n {e}")
+            logging.error(f"Error while resetting topic data:\n {e}")
 
     async def save_favorite_recipes(self, user_id: str, recipe: str):
         recipe_data = RecipeModel(
@@ -90,7 +90,7 @@ class MongoDBActions(MongoDBConnection):
         try:
             await self.favorite_recipes_collection.insert_one(recipe_data.dict())
         except Exception as e:
-            logging.error(f"Error while resetting data:\n {e}")
+            logging.error(f"Error while saving recipe data:\n {e}")
 
     async def get_favorite_recipes(self, user_id: str):
         try:
@@ -102,4 +102,10 @@ class MongoDBActions(MongoDBConnection):
             else:
                 return 'Нет записей для данного пользователя'
         except Exception as e:
-            logging.error(f"Error while resetting data:\n {e}")
+            logging.error(f"Error while collecting recipe data:\n {e}")
+
+    async def reset_recipes(self, user_id: str):
+        try:
+            await self.favorite_recipes_collection.delete_many({"user_id": user_id})
+        except Exception as e:
+            logging.error(f"Error while resetting recipe data:\n {e}")

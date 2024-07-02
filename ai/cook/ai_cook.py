@@ -1,7 +1,7 @@
 import json
 import httpx
 import logging
-from ai.context import create_chat_context, read_markdown_file
+from ai.context import read_markdown_file, build_context
 from settings import settings
 from openai import AsyncOpenAI
 from database.connect import MongoDBActions
@@ -73,12 +73,8 @@ class OpenAi_cook:
     async def gpt4(self, question, user_id, chat_topic):
         if self.prompt_cook is None:
             await self.initialize_prompt()
-        context = [{"role": "system", "content": self.prompt_cook}]
-        last_text = await mongo_actions.get_user_messages(user_id, chat_topic)
-        context_user = await create_chat_context(last_text, chat_topic)
-        context.extend(context_user)
-        context.append({"role": "user", "content": str(question)})
-        print(context)
+
+        context = await build_context(user_id, chat_topic, question, self.prompt_cook)
         try:
             response = await self.client.chat.completions.create(
                 messages=context,
