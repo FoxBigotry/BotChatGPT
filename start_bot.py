@@ -9,6 +9,7 @@ dp = Dispatcher()
 async def main():
     bot = Bot(token=settings.TG_KEY)
     dp.include_router(router)
+    print("Start polling")
     await dp.start_polling(bot)
 
 
