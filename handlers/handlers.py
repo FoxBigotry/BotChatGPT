@@ -31,6 +31,8 @@ async def cmd_reset(message: Message):
 @router.message(F.text)
 async def handle_message(message: Message, voice_msg_text=None):
     user_id = str(message.from_user.id)
+    chat_topic = str(message.message_thread_id)
+
     if user_id not in settings.USER_IDS.split(','):
         await message.answer("Я персональный ассистент для узкого круга лиц.\n "
                              "Можете написать @astehr для получения доступа ")
@@ -66,7 +68,7 @@ async def handle_message(message: Message, voice_msg_text=None):
                 )
             message_id = await mongo_actions.create_message(message_data)
 
-            response = await openai_client.gpt4(message_text, user_id, 'ai/uni_agent.md')
+            response = await openai_client.gpt4(message_text, user_id, chat_topic, 'ai/uni_agent.md')
 
             if user_id in user_states and user_states[user_id] != message_text:
                 message_text = user_states[user_id]
@@ -76,7 +78,7 @@ async def handle_message(message: Message, voice_msg_text=None):
                     message=message_text
                     )
                 message_id = await mongo_actions.create_message(message_data)
-                response = await openai_client.gpt4(message_text, user_id, 'ai/uni_agent.md')
+                response = await openai_client.gpt4(message_text, user_id, chat_topic,'ai/uni_agent.md')
 
             update_data = {"response": response.choices[0].message.content}
             await mongo_actions.update_message(message_id, update_data)

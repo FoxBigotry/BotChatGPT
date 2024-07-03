@@ -1,6 +1,6 @@
 import httpx
 import logging
-from ai.context import create_chat_context
+from ai.context import load_system_prompt,build_context
 from settings import settings
 from openai import AsyncOpenAI
 from database.connect import MongoDBActions
@@ -20,21 +20,13 @@ class OpenAi:
         else:
             self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 
-        self.agent_system_prompt = self.load_system_prompt(prompt_path)
+        self.agent_system_prompt = load_system_prompt(prompt_path)
         self.default_model = default_model
 
-    @staticmethod
-    def load_system_prompt(prompt_path: str) -> str:
-        """
-        Load the system prompt from a file.
-        """
-        with open(prompt_path, 'r', encoding='utf-8') as file:
-            return file.read()
-
-
-    async def gpt4(self, question, user_id, prompt_path: str = 'ai/settings.md'):
-        last_text = await mongo_actions.get_user_messages(user_id)
-        context = await create_chat_context(last_text, prompt_path)
+    async def gpt4(self, question, user_id, chat_topic, prompt_path: str = 'ai/settings.md'):
+        context = await build_context(user_id, chat_topic, question, prompt_path)
+        # last_text = await mongo_actions.get_user_messages(user_id)
+        # context = await create_chat_context(last_text, prompt_path)
         # context.append({"role": "user", "content": str(question)})
         # full_prompt = [{"role": "system", "content": self.agent_system_prompt}]
         # for message in last_text[-settings.HISTORY_LENGTH:]:
