@@ -1,19 +1,18 @@
-import aiofiles
 import logging
 from database.connect import MongoDBActions
 
 mongo_actions = MongoDBActions()
 
 
-async def read_markdown_file(file_path: str) -> str:
+def load_system_prompt(prompt_path: str) -> str:
     try:
-        async with aiofiles.open(file_path, 'r', encoding='utf-8') as file:
-            return await file.read()
+        with open(prompt_path, 'r', encoding='utf-8') as file:
+            return file.read()
     except Exception as e:
         logging.error(f"Error open MD file:\n {e}")
 
 
-async def create_chat_context(last_text, chat_topic) -> list:
+async def create_chat_context(last_text) -> list:
     context = []
 
     for msg in last_text:
@@ -27,7 +26,7 @@ async def create_chat_context(last_text, chat_topic) -> list:
 async def build_context(user_id, chat_topic, question, prompt):
     context = [{"role": "system", "content": prompt}]
     last_text = await mongo_actions.get_user_messages(user_id, chat_topic)
-    context_user = await create_chat_context(last_text, chat_topic)
+    context_user = await create_chat_context(last_text)
     context.extend(context_user)
     context.append({"role": "user", "content": str(question)})
     return context
