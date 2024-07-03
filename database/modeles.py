@@ -17,12 +17,10 @@ class UserModel(BaseModel):
 
 class MessageModel(BaseModel):
     user_id: str
-    username: str | None = Field(None)
-    first_name: str | None = Field(None)
-    last_name: str | None = Field(None)
     datetime: str | None = Field(None)
     message: str | None = Field(None)
     response: str | None = Field(None)
+    chat_topic: str | None = Field(None)
 
     prompt_tokens: int | None = Field(None)
     completion_tokens: int | None = Field(None)

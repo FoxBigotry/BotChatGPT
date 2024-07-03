@@ -32,6 +32,8 @@ class MongoDBActions(MongoDBConnection):
             logging.error(f"Error while resetting data: {e}")
 
     async def get_user_messages(self, user_id: str, limit=settings.HISTORY_LENGTH):
+        if not isinstance(limit, int):
+            limit = int(limit)
         try:
             messages = await (
                 self.message_collection.find({'user_id': user_id})
