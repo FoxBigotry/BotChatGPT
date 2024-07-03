@@ -22,7 +22,7 @@ class OpenAi_cook:
                                       proxies=settings.PROXY,
                                       transport=httpx.HTTPTransport(local_address="0.0.0.0")
                                   ))
-        self.model = settings.MODEL_AI
+        self.model = settings.DEFAULT_MODEL
         self.prompt_cook = load_system_prompt('ai/cook/settings_cook.md')
 
     tools = [

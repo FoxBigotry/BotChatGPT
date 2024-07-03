@@ -11,6 +11,7 @@ async def main():
     bot = Bot(token=settings.TG_KEY)
     router_command.include_router(router_message)
     dp.include_router(router_command)
+    print("Start polling")
     await dp.start_polling(bot)
 
 

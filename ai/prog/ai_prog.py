@@ -12,7 +12,7 @@ class OpenAi_prog:
                                       proxies=settings.PROXY,
                                       transport=httpx.HTTPTransport(local_address="0.0.0.0")
                                   ))
-        self.model = settings.MODEL_AI
+        self.model = settings.DEFAULT_MODEL
         self.prompt_prog = load_system_prompt('ai/prog/settings_prog.md')
 
     async def gpt4(self, question, user_id, chat_topic):

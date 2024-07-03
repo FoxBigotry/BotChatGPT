@@ -11,7 +11,6 @@ def load_system_prompt(prompt_path: str) -> str:
     except Exception as e:
         logging.error(f"Error open MD file:\n {e}")
 
-
 async def create_chat_context(last_text) -> list:
     context = []
 
@@ -30,3 +29,19 @@ async def build_context(user_id, chat_topic, question, prompt):
     context.extend(context_user)
     context.append({"role": "user", "content": str(question)})
     return context
+
+
+# async def create_chat_context(last_text, prompt_path: str) -> list:
+#     info = await read_markdown_file(prompt_path)
+#     context = [{"role": "system", "content": info}]
+#     counter = 0
+#     for msg in last_text[::-1]:
+#
+#         if 'message' in msg and msg['message']:
+#             context.append({"role": "user", "content": msg['message']})
+#         if 'response' in msg and msg['response']:
+#             context.append({"role": "assistant", "content": msg['response']})
+#         if counter >= 10:
+#             break
+#         counter += 1
+#     return context

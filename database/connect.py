@@ -37,12 +37,17 @@ class MongoDBActions(MongoDBConnection):
         except Exception as e:
             logging.error(f"Error while resetting all data:\n {e}")
 
-    async def get_user_messages(self, user_id: str, chat_topic: str, limit=5):
+    async def get_user_messages(self, user_id: str, chat_topic: str, limit=settings.HISTORY_LENGTH):
+        if not isinstance(limit, int):
+            limit = int(limit)
         try:
-            messages = await self.message_collection.find({'user_id': user_id,
-                                                           'chat_topic': chat_topic}
-                                                          ).sort('datetime',
-                                                                 -1).limit(limit).to_list(length=limit)
+            messages = await (
+                self.message_collection.find({'user_id': user_id,
+                                              'chat_topic': chat_topic})
+                .sort('datetime', -1)
+                .limit(limit)
+                .to_list(length=limit)
+            )
             if not messages:
                 return []
             messages.sort(key=lambda x: x['datetime'])

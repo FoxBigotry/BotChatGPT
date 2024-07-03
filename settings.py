@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     MONGO_URI: str
     MONGO_DB_NAME: str
     OPENAI_API_KEY: str | None = None
-    PROXY: str
+    PROXY: str | None = None
     # MODEL_AI: str
 
     # Default settings
