@@ -5,10 +5,9 @@ from database.connect import MongoDBActions
 from handlers.utils import create_or_get_user, final_answer
 from settings import settings
 from handlers.voice_processing import generate_unique_name, convert_ogg_to_mp3, delete_file_by_file_path
-from ai.ai import OpenAi_default
+from ai.ai_audio import speech_to_text_recognition
 
 router_message = Router()
-openai_client = OpenAi_default()
 mongo_actions = MongoDBActions()
 user_states = {}
 
@@ -16,7 +15,6 @@ user_states = {}
 @router_message.message(F.text)
 async def handle_message(message: Message, voice_msg_text=None):
     user_id = str(message.from_user.id)
-    # message_text = message.text
     chat_topic = str(message.message_thread_id)
 
     if user_id not in settings.USER_IDS.split(','):
@@ -61,6 +59,7 @@ async def handle_message(message: Message, voice_msg_text=None):
 @router_message.message()
 async def handle_voice(message: Message):
     if message.content_type == ContentType.VOICE:
+        chat_topic = str(message.message_thread_id)
         file_uuid = generate_unique_name()
         ogg_file_path = settings.AUDIOS_DIR + f"{file_uuid}.ogg"
         mp3_file_path = settings.AUDIOS_DIR + f"{file_uuid}.mp3"
@@ -73,7 +72,7 @@ async def handle_voice(message: Message):
             voice_ogg.write(voice_data.read())
         try:
             convert_ogg_to_mp3(ogg_file_path, mp3_file_path)
-            transcript = await openai_client.speech_to_text_recognition(mp3_file_path)
+            transcript = await speech_to_text_recognition(mp3_file_path)
         except Exception as e:
             print(f"Error in speech to text recognition: {e.__str__()}")
             transcript = None
@@ -86,6 +85,7 @@ async def handle_voice(message: Message):
             await handle_message(message, voice_msg_text=transcript)
 
     else:
-        system_messages = await get_system_messages(str(message.chat.id))
-        # FIXME:test
-        await message.reply(system_messages.cant_handle)
+        # system_messages = await get_system_messages(str(message.chat.id))
+        # # FIXME:test
+        # await message.reply(system_messages.cant_handle)
+        await message.reply("Не могу обработать данное сообщение")

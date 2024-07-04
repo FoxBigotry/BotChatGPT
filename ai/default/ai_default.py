@@ -36,15 +36,15 @@ class OpenAi_default:
             logging.error(f"Error during OpenAI request: {e}")
             print(f"error: {str(e)}")
 
-    async def speech_to_text_recognition(self, audio_filepath):
-        try:
-            with open(audio_filepath, 'rb') as audio:
-                transcript = await self.client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=audio,
-                    response_format="text"
-                )
-                return transcript
-
-        except Exception as e:
-            print(f"Error in file retrieving: {e}\n{e.__str__()}")
+    # async def speech_to_text_recognition(self, audio_filepath):
+    #     try:
+    #         with open(audio_filepath, 'rb') as audio:
+    #             transcript = await self.client.audio.transcriptions.create(
+    #                 model="whisper-1",
+    #                 file=audio,
+    #                 response_format="text"
+    #             )
+    #             return transcript
+    #
+    #     except Exception as e:
+    #         print(f"Error in file retrieving: {e}\n{e.__str__()}")

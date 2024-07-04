@@ -1,5 +1,5 @@
 import datetime
-from ai.ai import OpenAi_default
+from ai.default.ai_default import OpenAi_default
 from ai.prog.ai_prog import OpenAi_prog
 from ai.cook.ai_cook import OpenAi_cook
 from database.connect import MongoDBActions
@@ -69,3 +69,12 @@ async def final_answer(user_id, message_text, chat_topic):
     message_id = await create_message(user_id, message_text, chat_topic)
     response = await handle_gpt_response(user_id, message_text, chat_topic)
     return message_id, response
+
+
+# async def speech_to_text_recognition(mp3_file_path):
+#     if chat_topic == '14':
+#         return await openai_client_cook.speech_to_text_recognition(mp3_file_path)
+#     elif chat_topic == '22':
+#         return await openai_client_prog.speech_to_text_recognition(mp3_file_path)
+#     else:
+#         return await openai_client_default.speech_to_text_recognition(mp3_file_path)
