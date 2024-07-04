@@ -1,9 +1,11 @@
 import datetime
+from ai.ai import OpenAi_default
 from ai.prog.ai_prog import OpenAi_prog
 from ai.cook.ai_cook import OpenAi_cook
 from database.connect import MongoDBActions
 from database.models import MessageModel, UserModel
 
+openai_client_default = OpenAi_default()
 openai_client_prog = OpenAi_prog()
 openai_client_cook = OpenAi_cook()
 mongo_actions = MongoDBActions()
@@ -13,19 +15,22 @@ async def start_message(chat_topic):
     if chat_topic == '14':
         return ('Привет, я повар🧑‍🍳\n'
                 'Я могу ответить на любые вопросы по готовке.\n'
-                'Так же могу сохранить рецепт если попросите и напомнить уже созранённые.\n'
+                'Так же могу сохранить рецепт если попросите и напомнить уже сохранённые.\n'
                 'Знайте, я могу забыть всё по теме по команде /reset\n'
                 'Забыть все рецепты которые мы сохранили /reset_recipes\n'
                 'И могу забыть всё и во всех темах по команде /reset_all\n'
                 'Какой у вас вопрос?\n'
                 'О кстати, в соседнем чате сидит программист👨‍💻')
-    else:
+    elif chat_topic == '22':
         return ('Привет, я программист👨‍💻\n'
                 'Я могу ответить на любые вопросы по программированию.\n'
                 'Знайте, я могу забыть всё по теме по команде /reset\n'
                 'И могу забыть всё и во всех темах по команде /reset_all\n'
                 'Какой у вас вопрос?\n'
                 'О кстати, в соседнем чате сидит повар🧑‍🍳')
+    else:
+        return ('Ваш ассистент на месте\n'
+                'С каким вопросом могу вам помочь?')
 
 
 async def create_or_get_user(user_id, from_user):
@@ -54,8 +59,10 @@ async def create_message(user_id, message_text, chat_topic):
 async def handle_gpt_response(user_id, message_text, chat_topic):
     if chat_topic == '14':
         return await openai_client_cook.gpt4(message_text, user_id, chat_topic)
-    else:
+    elif chat_topic == '22':
         return await openai_client_prog.gpt4(message_text, user_id, chat_topic)
+    else:
+        return await openai_client_default.gpt4(message_text, user_id, chat_topic)
 
 
 async def final_answer(user_id, message_text, chat_topic):

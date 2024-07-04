@@ -5,10 +5,10 @@ from database.connect import MongoDBActions
 from handlers.utils import create_or_get_user, final_answer
 from settings import settings
 from handlers.voice_processing import generate_unique_name, convert_ogg_to_mp3, delete_file_by_file_path
-from ai.ai import OpenAi
+from ai.ai import OpenAi_default
 
 router_message = Router()
-openai_client = OpenAi()
+openai_client = OpenAi_default()
 mongo_actions = MongoDBActions()
 user_states = {}
 

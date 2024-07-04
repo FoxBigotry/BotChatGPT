@@ -11,6 +11,7 @@ def load_system_prompt(prompt_path: str) -> str:
     except Exception as e:
         logging.error(f"Error open MD file:\n {e}")
 
+
 async def create_chat_context(last_text) -> list:
     context = []
 

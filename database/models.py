@@ -24,6 +24,7 @@ class MessageModel(BaseModel):
     spent_tokens: int | None = Field(None)
     token_price: float | None = Field(None)
 
+
 class RecipeModel(BaseModel):
     user_id: str
     recipe: str | None = Field(None)

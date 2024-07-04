@@ -31,14 +31,3 @@ async def cmd_reset(message: Message):
 async def cmd_reset(message: Message):
     await mongo_actions.reset_recipes(str(message.from_user.id))
     await message.answer('Все сохранённые рецепты удалены,')
-
-# @router_command.message(CommandStart())
-# async def cmd_start(message: Message):
-#     await message.answer('Ваш ассистент на месте\n'
-#                          'С каким вопросом могу вам помочь?')
-#
-#
-# @router_command.message(Command("reset_dev"))
-# async def cmd_reset(message: Message):
-#     await mongo_actions.reset_all(str(message.from_user.id))
-#     await message.answer('Всё было удалено, если хочешь мы можем начать сначала.')
