@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     MONGO_DB_NAME: str
     OPENAI_API_KEY: str | None = None
     PROXY: str | None = None
+    # MODEL_AI: str
 
     # Default settings
     PROMPT_TOKEN_PRICE: int = 5  # in usd

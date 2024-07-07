@@ -1,5 +1,4 @@
 import logging
-import aiofiles
 from database.connect import MongoDBActions
 
 mongo_actions = MongoDBActions()
@@ -13,16 +12,7 @@ def load_system_prompt(prompt_path: str) -> str:
         logging.error(f"Error open MD file:\n {e}")
 
 
-# async def read_markdown_file(file_path: str) -> str:
-#     try:
-#         async with aiofiles.open(file_path, 'r', encoding='utf-8') as file:
-#             return await file.read()
-#     except Exception as e:
-#         logging.error(f"Error during OpenAI request: {e}")
-#         print(f"error: {str(e)}")
-
-
-async def create_chat_context_2(last_text) -> list:
+async def create_chat_context(last_text) -> list:
     context = []
 
     for msg in last_text:
@@ -36,23 +26,7 @@ async def create_chat_context_2(last_text) -> list:
 async def build_context(user_id, chat_topic, question, prompt):
     context = [{"role": "system", "content": prompt}]
     last_text = await mongo_actions.get_user_messages(user_id, chat_topic)
-    context_user = await create_chat_context_2(last_text)
+    context_user = await create_chat_context(last_text)
     context.extend(context_user)
     context.append({"role": "user", "content": str(question)})
     return context
-
-
-# async def create_chat_context(last_text, prompt_path: str) -> list:
-#     info = await read_markdown_file(prompt_path)
-#     context = [{"role": "system", "content": info}]
-#     counter = 0
-#     for msg in last_text[::-1]:
-#
-#         if 'message' in msg and msg['message']:
-#             context.append({"role": "user", "content": msg['message']})
-#         if 'response' in msg and msg['response']:
-#             context.append({"role": "assistant", "content": msg['response']})
-#         if counter >= 10:
-#             break
-#         counter += 1
-#     return context

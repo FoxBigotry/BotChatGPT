@@ -1,14 +1,11 @@
 from datetime import datetime
 from typing import Self
-
 from pydantic import BaseModel, Field
 from openai.types.chat import ChatCompletion
-
 from ai.utils import BaseUtils
 
 
 class UserModel(BaseModel):
-
     user_id: str
     username: str | None = None
     first_name: str | None = None
@@ -27,6 +24,10 @@ class MessageModel(BaseModel):
     spent_tokens: int | None = Field(None)
     token_price: float | None = Field(None)
 
+
+class RecipeModel(BaseModel):
+    user_id: str
+    recipe: str | None = Field(None)
 
     @classmethod
     def from_openai_message(cls, response: ChatCompletion, msg_type: str, thread_id: str) -> Self:
